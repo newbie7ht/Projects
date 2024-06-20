@@ -1,0 +1,15 @@
+---
+- name: this playbook is for handlers example
+  hosts: webservers
+  become: true
+  tasks:  
+  - name: install apche2
+    yum:
+      name: httpd
+      state:  installed
+    notify: start apache
+
+  handlers:
+  - name: start apache
+    service: httpd
+    state: started  

@@ -1,0 +1,28 @@
+---
+- name: this playbook is used to show us the use of when condition which is used when we want to install package acording to need
+  hosts: all
+  become: true
+  tasks:
+  - name: install package
+    yum:  
+      name: httpd
+      state: installed
+    when: ansible_os_family == "RedHat"
+
+  - name: start httpd
+    service:
+      name: httpd
+      state:  started
+    when: ansible_os_family = "RedHat"
+
+  - name: install apche2
+    apt:
+      name: apache2
+      state:  present
+    when:  ansible_os_family = "Debian"
+  
+  - name: start apche2
+    service:
+      name: apache2
+      state:  started
+    when: ansible_os_family = "Debian"

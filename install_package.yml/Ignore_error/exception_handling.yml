@@ -1,0 +1,17 @@
+---
+- name: this playbook installs tomcat
+  hosts: all
+  become: true
+  tasks:
+  - name: install java
+    yum:
+      name: java
+      state:  installed
+    when: ansible_os_family == "RedHat"
+    ignore_errors: yes   #this command will allow ansible to execute the next tasks even if the current task fails 
+
+  - name: install java on ubuntu
+    apt: 
+      name: default-jdk
+      state:  present
+    when: ansible_os_family == "Debian"

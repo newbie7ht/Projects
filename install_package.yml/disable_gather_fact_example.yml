@@ -1,0 +1,9 @@
+---
+- name: this playbook is example of disabling gather facts
+  hosts: all
+  gather_facts: no  
+  tasks:
+    name: creating a directory
+    file:
+      path: /home/ansadmin/dir1
+      state: directory

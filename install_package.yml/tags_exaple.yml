@@ -1,0 +1,27 @@
+---
+- name: this playbook installs tomcat
+  hosts: all
+  become: true
+  tasks:
+  - name: install java
+    yum:
+      name: java
+      state:  installed
+    when: ansible_os_family == "RedHat"
+    tags: install_apache
+
+  - name: install java on ubuntu
+    apt: 
+      name: default-jdk
+      state:  present
+    when: ansible_os_family == "Debian"
+    tags: start_apache
+
+ 
+# if i want to just run install command and want to skip the start apache
+
+--> ansible-playbook -i hosts tags_example.yml --tags "install_apache"  
+
+# if i want to just run start apache command and want to skip the install apache
+
+--> ansible-playbook -i hosts tags_example.yml --tags "start_apache"

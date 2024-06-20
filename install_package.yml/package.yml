@@ -1,0 +1,21 @@
+---
+- name: this playbook install packages
+  hosts: webservers
+  #become: true
+  tasks:
+  - name: install package
+    yum:
+      name: tree
+      state: installed
+
+- name: this playbook install httpd
+  hosts: all
+  tasks:  
+  - name: install package
+    yum: 
+      name: httpd
+      state:  installed 
+  - name: start httpd service
+    service: 
+      name: httpd
+      state: started

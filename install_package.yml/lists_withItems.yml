@@ -1,0 +1,16 @@
+---
+- name: this playbook is used to show the example of lits and with items
+  hosts:  all
+  become: true
+  tasks:
+  - name: install package
+    yum:
+      name: "{{item}}"
+      state: installed
+    with_items:
+    - git
+    - make
+    - gcc
+    - wget
+    - telnet
+    - gzip

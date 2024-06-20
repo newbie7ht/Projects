@@ -1,0 +1,13 @@
+---
+- name: this playbook is to stop httpd service
+  hosts: webservers
+  become: true
+  tasks: stop httpd service
+  - name: stopping httpd service
+    service: httpd
+      name: httpd
+      state: stopped
+  - name: uninstall httpd
+    service: httpd
+      name: httpd
+        state: removed
