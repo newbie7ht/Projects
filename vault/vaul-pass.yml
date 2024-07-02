@@ -1,0 +1,6 @@
+password: Ansible123
+
+
+#ansible-vault encrypt vaul-pass.yml to encrypt the yml file
+#ansible-vault decrypt vaul-pass.yml to dencrypt the yml file
+

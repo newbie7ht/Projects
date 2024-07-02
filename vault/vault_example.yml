@@ -1,0 +1,8 @@
+---
+- name: this playbook is to test vault
+  hosts:  
+  become: true
+  tasks:
+  - name: clone a repo
+    git:  https://github.com/newbie7ht/Projects.git
+    dest: /opt/ansible/test-vault

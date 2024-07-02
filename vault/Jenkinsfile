@@ -1,0 +1,58 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_REGISTRY = 'your-artifactory-url' // Replace with your Artifactory URL
+        DOCKER_CREDENTIALS_ID = 'artifactory-credentials' // Jenkins credentials ID for Artifactory
+        REPOSITORY_NAME = 'fincore_mode_tf_finlistval' // Repository name in Artifactory
+        IMAGE_NAME_PREFIX = 'fnhttptf' // Prefix for the image name in Artifactory
+        KUBE_CREDENTIALS_ID = 'kube-credentials' // Jenkins credentials ID for Kubernetes
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://your-git-repo-url.git' // Replace with your Git repository URL
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Generate a unique tag for the Docker image
+                    def timestamp = new Date().format("yyyyMMdd-HHmmss")
+                    def imageTag = "${IMAGE_NAME_PREFIX}-${timestamp}"
+
+                    // Build Docker image using Dockerfile from the checked-out repository
+                    docker.build("${DOCKER_REGISTRY}/${REPOSITORY_NAME}/${IMAGE_NAME_PREFIX}:${imageTag}", ".")
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry("https://${DOCKER_REGISTRY}", DOCKER_CREDENTIALS_ID) {
+                        docker.image("${DOCKER_REGISTRY}/${REPOSITORY_NAME}/${IMAGE_NAME_PREFIX}:${imageTag}").push()
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    withCredentials([kubeconfigFile(credentialsId: KUBE_CREDENTIALS_ID, variable: 'KUBECONFIG')]) {
+                        sh "kubectl set image deployment/fnhttptf fnhttptf=${DOCKER_REGISTRY}/${REPOSITORY_NAME}/${IMAGE_NAME_PREFIX}:${imageTag}"
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}

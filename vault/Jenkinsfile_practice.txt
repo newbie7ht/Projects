@@ -1,0 +1,18 @@
+pipeline{
+    angent any
+    environment{
+
+    }
+    stages{
+        stage('checkout'){
+            steps{
+                git 'git-url'
+            }
+        }
+        stage('build'){
+            steps{
+                
+            }
+        }
+    }
+}
